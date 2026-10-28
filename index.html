@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Garena Free Fire Team</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-body: #050508;
+            --bg-card: rgba(20, 20, 25, 0.85);
+            --bg-input: #1a1a21;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.5);
+            --border-light: rgba(255, 255, 255, 0.08);
+        }
+
+        html, body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden; 
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-body) 70%);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Premium Animated Header (Fixed Height) */
+        .header-container {
+            width: 100%;
+            height: 54px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 20;
+            overflow: hidden;
+            background-color: transparent;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: white;
+            text-align: center;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-light);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateY(0);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .header-container.hide-banner .header {
+            transform: translateY(-100%);
+        }
+
+        /* Shining animation on banner */
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        .header::before {
+            content: '👑';
+            font-size: 20px;
+            filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));
+        }
+
+        /* Top Fixed Section */
+        .top-section {
+            padding: 12px 15px 0px 15px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            background-color: #000;
+            height: 160px;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8);
+            border: 1px solid var(--border-light);
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .play-overlay:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-left: 12px solid #fff;
+            margin-left: 4px;
+        }
+
+        /* Advanced Glowing Install Card */
+        .install-card-wrapper {
+            position: relative;
+            border-radius: 16px;
+            padding: 2px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: #000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .install-card-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent 0%, 
+                transparent 60%, 
+                rgba(16, 185, 129, 0.6) 75%, 
+                rgba(16, 185, 129, 1) 80%, 
+                rgba(16, 185, 129, 0.6) 85%, 
+                transparent 100%
+            );
+            animation: rotateGlow 3s linear infinite, colorCycle 4s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotateGlow {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes colorCycle {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .install-card {
+            position: relative;
+            z-index: 1;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .install-card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .app-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .app-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-title::after {
+            content: '✔';
+            font-size: 10px;
+            color: #000;
+            background: #fbbf24;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .app-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stars {
+            color: #fbbf24;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .install-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: all 0.2s ease;
+        }
+
+        .install-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Chat Heading */
+        .chat-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px 5px 15px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Chat Section */
+        .chat-section {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .comments-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; 
+            padding-bottom: 10px;
+            gap: 8px;
+            scroll-behavior: auto; 
+        }
+
+        .comments-container::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .comment {
+            display: flex;
+            gap: 8px;
+            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .comment-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 85%;
+            background: #18181b;
+            padding: 6px 10px;
+            border-radius: 2px 12px 12px 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .user-name {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 2px;
+        }
+
+        .user-name.is-user {
+            color: var(--accent-green);
+        }
+
+        .typing-text {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-weight: 500;
+        }
+
+        .dot {
+            width: 2px;
+            height: 2px;
+            background-color: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .comment-text {
+            font-size: 12px;
+            color: #e2e8f0;
+            line-height: 1.3;
+            word-break: break-word;
+            font-weight: 500;
+        }
+
+        /* Premium Input Area */
+        .input-area {
+            display: flex;
+            padding: 8px 15px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            background: rgba(5, 5, 8, 0.9);
+            backdrop-filter: blur(10px);
+            gap: 10px;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border-light);
+            z-index: 99;
+        }
+
+        .input-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-area input {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 12px 18px;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 500;
+            outline: none;
+            user-select: text;
+            -webkit-user-select: text;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .input-area input:focus {
+            border: 1px solid var(--accent-green);
+            background-color: #1f1f24;
+        }
+
+        .input-area input::placeholder {
+            color: #71717a;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: 0.2s;
+        }
+        
+        .send-btn:active {
+            transform: scale(0.92);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- Animated Banner Container -->
+    <div class="header-container" id="bannerContainer">
+        <div class="header">Garena Free Fire Team</div>
+    </div>
+
+    <!-- Fixed Top Section -->
+    <div class="top-section">
+        
+        <!-- Video Container -->
+        <div class="video-container">
+            <!-- Yahan aapki vipproxy.mp4 chalegi -->
+            <video id="promoVideo" poster="Proxy Server.png" src="vipproxy.mp4" loop playsinline></video>
+            <div class="play-overlay" id="playBtn">
+                <div class="play-icon"></div>
+            </div>
+        </div>
+
+        <div class="install-card-wrapper">
+            <div class="install-card">
+                <div class="install-card-top">
+                    <img src="Proxy Server.png" 
+                         onerror="this.onerror=null; this.src='https://downloadr2.apkmirror.com/wp-content/uploads/2026/04/56/69d5d2dbecc95_com.dts.freefiremax-384x384.png';" 
+                         alt="Icon" class="app-icon">
+                    <div class="app-details">
+                        <div class="app-title">VIP Proxy server</div>
+                        <div class="app-subtitle">DOWNLOAD proxy server</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <a href="https://1024terabox.com/s/1IbY2T-v4Ky2o8HoPEGBY-A" class="install-btn" target="_blank">Install</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Heading -->
+    <div class="chat-heading">
+        <span>Live Comments</span>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="chat-section" id="chatArea">
+        <div class="comments-container" id="commentsContainer">
+            <!-- Comments injected here -->
+        </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+        <div class="input-wrapper">
+            <input type="text" id="userInput" placeholder="Enter Text..." onkeypress="handleKeyPress(event)">
+        </div>
+        <button class="send-btn" onclick="postComment()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+    // --- 1. DATABASE OF COMMENTS ---
+    const baseComments = [
+        "Bhai game bhi chal raha hai, koi lag nahi.",
+        "Ye skins to game bhi dikhre hain, mast.",
+        "Bundle pehen k bhi game chalra hai, OP.",
+        "Rank match bhi chalra hai bina lag ke.",
+        "Sachme me working hai bhai, ping kam ho gaya.",
+        "Maza aa gya bhai, headshot easy ho gaye.",
+        "Mene to kr liya try mast hai, sab try karo.",
+        "100% working hai, mera ping 20ms ho gaya.",
+        "Bhai ye proxy sach me kaam kar raha hai.",
+        "Game smooth chal raha hai, no packet loss.",
+        "Skin dikh rahi hai, bundle bhi chal raha hai.",
+        "Rank push kar raha hu ab, koi lag nahi.",
+        "Mast proxy hai bhai, game maza aa raha hai.",
+        "Bhai install karo, game ekdum smooth hai.",
+        "Ye skins game me dikhne lagi hain, sahi hai.",
+        "Mera network slow tha, isne solve kar diya.",
+        "Rank match me koi lag nahi, mast hai.",
+        "Sach me working hai, mene abhi check kiya.",
+        "Maza aa gaya bhai, free fire legend bana dega.",
+        "Bhai ye VIP proxy ekdum sahi hai.",
+        "Game chal raha hai bhai, skins bhi dikh rahi.",
+        "Bundle pehen ke rank match khel raha hu.",
+        "Kya baat hai, bina lag ke game chal raha.",
+        "Ekdum sahi hai, sab install kar lo.",
+        "Mene try kiya, mast chal raha hai bhai.",
+        "Game is running smoothly, no lag at all.",
+        "Skins are visible in game, awesome.",
+        "Playing rank match without lag, 100% working.",
+        "Really working bro, my ping dropped.",
+        "Having fun playing, headshots are easy.",
+        "Tried it works perfectly, highly recommended.",
+        "100% working, no packet loss.",
+        "Best proxy for FF, skins showing.",
+        "Smooth gameplay, rank match running.",
+        "Must try this, game is running.",
+        "Bundle is visible and game is smooth.",
+        "Legit working proxy, maza aa gaya.",
+        "No lag, skins visible, rank match OP.",
+        "Finally a working proxy, game chal raha hai.",
+        "100% secure, skins and bundle showing.",
+        "Ultra fast proxy, game running smoothly.",
+        "Game ta darun cholche, kono lag nei.",
+        "Skin gulo game e dekha jachhe, osadharon.",
+        "Rank match o cholche bina lag e.",
+        "Sotti kaj kore dada, ping kom hoye geche.",
+        "Maja asche khelte, headshot easy hoye geche.",
+        "Ekdom smooth cholche, 100% working.",
+        "Darun proxy, game ta ekdom fast.",
+        "Bundle pore game khela jachhe, khub valo.",
+        "Install kore dekhlam, onek fast.",
+        "Ei proxy ta na thakle game kora jeto na.",
+        "Skin dekha jachhe, game o cholche, OP.",
+        "Rank match e kono problem nei.",
+        "Game nalla velaiyaduthu, lag illa.",
+        "Skins game la theriyudhu, super ah irukku.",
+        "Rank match um velaiyudhu, no lag.",
+        "Unmaiyavey work aaguthu bro, ping kammi.",
+        "Semma gameplay, headshot adikka easy.",
+        "Nalla smooth ah irukku, 100% working.",
+        "Vera level proxy, game fast ah irukku.",
+        "Skins and bundle game la theriyudhu.",
+        "Install panniten, romba nalla velaiyudhu.",
+        "Idhu romba useful ah irukku, try pannunga.",
+        "Rank match la lag illa, super.",
+        "Game la skins paakka mudiyudhu, semma."
+    ];
+
+    const emojis = ['🔥', '💯', '✅', '😱', '✨', '😎', '👑', '⚡', '🚀', '🎮', '🥵', '🤯'];
+    const flags = ['🇮🇳', '🇧🇩', '🇳🇵', '🇧🇷', '🇲🇲'];
+
+    // --- 2. USER GENERATION ---
+    const firstNames = ["Rahul", "Amit", "Sayan", "Arjun", "Ravi", "Karan", "Vikas", "Priya", "Sneha", "Rohan", "Aditya", "Suresh", "Deepak", "Akash", "Ankit", "Sumit", "Pooja", "Neha", "Ritu", "Sita", "Tamilan", "Vijay", "Karthik", "Surya", "Ajith", "Raj", "Sanjay", "Manish", "Gaurav", "Nikhil"];
+    const gamingNames = ["ProGamer", "SniperX", "NoobKiller", "GhostOP", "ToxicBhai", "FF_Legend", "Alpha", "HeadshotKing", "RushGod", "SoloKiller", "GarenaBoy", "OP_Gamer", "Savage", "Titan", "Ninja", "Shadow", "PubgSlayer", "FireKing", "Blaze", "Viper", "AWM_God", "Assassin", "Destroyer", "Warrior", "Hunter", "Phantom"];
+    const lastNames = ["Kumar", "Sharma", "Singh", "Das", "Roy", "Patel", "Reddy", "Nair", "Yadav", "Mishra", "Gupta", "Bhai", "Gaming", "OP", "YT", "Khan", "Ali", "Saha", "Dey", "Mondal"];
+    const avatarColors = ["#ef4444", "#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ec4899", "#06b6d4", "#6366f1", "#84cc16", "#f97316"];
+
+    const users = [];
+    for (let i = 0; i < 100; i++) {
+        let name = Math.random() > 0.5 
+            ? firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)]
+            : gamingNames[Math.floor(Math.random() * gamingNames.length)] + Math.floor(Math.random() * 99);
+        
+        let flag = Math.random() < 0.3 ? " " + flags[Math.floor(Math.random() * flags.length)] : "";
+
+        users.push({
+            name: name,
+            flag: flag,
+            initial: name.charAt(0).toUpperCase(),
+            color: avatarColors[Math.floor(Math.random() * avatarColors.length)]
+        });
+    }
+
+    // --- 3. CHAT LOGIC ---
+    const commentsContainer = document.getElementById('commentsContainer');
+    const userInput = document.getElementById('userInput');
+    const chatArea = document.getElementById('chatArea');
+    
+    let isPaused = false;
+
+    function createCommentElement(user, text, isUser = false, isTyping = false) {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'avatar';
+        avatarDiv.style.backgroundColor = isUser ? '#10b981' : user.color;
+        avatarDiv.innerText = isUser ? 'U' : user.initial;
+
+        const bodyDiv = document.createElement('div');
+        bodyDiv.className = 'comment-body';
+
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'user-name' + (isUser ? ' is-user' : '');
+        
+        let displayName = isUser ? 'user591' : (user.name + (user.flag ? user.flag : ""));
+
+        if (isTyping) {
+            nameDiv.innerHTML = `${displayName} <span class="typing-text">typing <div class="dot"></div><div class="dot"></div><div class="dot"></div></span>`;
+        } else {
+            nameDiv.innerHTML = displayName;
+        }
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'comment-text';
+        textDiv.innerText = isTyping ? "" : text;
+
+        bodyDiv.appendChild(nameDiv);
+        bodyDiv.appendChild(textDiv);
+        commentDiv.appendChild(avatarDiv);
+        commentDiv.appendChild(bodyDiv);
+
+        return commentDiv;
+    }
+
+    function pushComment(commentElement) {
+        commentsContainer.appendChild(commentElement);
+        if (!isPaused) {
+            commentsContainer.scrollTop = commentsContainer.scrollHeight;
+        }
+    }
+
+    function generateRandomComment() {
+        if (isPaused) return;
+
+        const randomUser = users[Math.floor(Math.random() * users.length)];
+        let randomText = baseComments[Math.floor(Math.random() * baseComments.length)];
+        
+        let emojiCount = Math.floor(Math.random() * 3);
+        for(let i=0; i<emojiCount; i++) {
+            randomText += " " + emojis[Math.floor(Math.random() * emojis.length)];
+        }
+        
+        if (Math.random() < 0.15) {
+            const typingEl = createCommentElement(randomUser, "", false, true);
+            pushComment(typingEl);
+            
+            setTimeout(() => {
+                if (typingEl.parentNode) {
+                    const textDiv = typingEl.querySelector('.comment-text');
+                    const nameDiv = typingEl.querySelector('.user-name');
+                    textDiv.innerText = randomText;
+                    nameDiv.innerHTML = randomUser.name + randomUser.flag;
+                    if(!isPaused) commentsContainer.scrollTop = commentsContainer.scrollHeight;
+                }
+            }, 200); 
+        } else {
+            pushComment(createCommentElement(randomUser, randomText));
+        }
+
+        setTimeout(generateRandomComment, 280);
+    }
+
+    function stopFeed() {
+        isPaused = true;
+    }
+
+    function startFeed() {
+        isPaused = false;
+        commentsContainer.scrollTop = commentsContainer.scrollHeight;
+        generateRandomComment();
+    }
+
+    // Hold to Pause
+    chatArea.addEventListener('mousedown', stopFeed);
+    chatArea.addEventListener('touchstart', stopFeed, {passive: true});
+    
+    chatArea.addEventListener('mouseup', startFeed);
+    chatArea.addEventListener('mouseleave', startFeed);
+    chatArea.addEventListener('touchend', startFeed);
+    chatArea.addEventListener('touchcancel', startFeed);
+
+    // --- 4. USER INTERACTION ---
+    window.postComment = function() {
+        const text = userInput.value.trim();
+        if (text === "") return;
+
+        const userObj = { name: "user591" };
+        const userCommentEl = createCommentElement(userObj, text + " 🔥", true, false);
+        
+        commentsContainer.appendChild(userCommentEl);
+        commentsContainer.scrollTop = commentsContainer.scrollHeight;
+        isPaused = false;
+        
+        userInput.value = "";
+
+        const positiveReplies = [
+            "100% working hai bhai, mene bhi try kiya ✅",
+            "Mene to kr liya try, mast hai 🔥",
+            "Wahin positive working hai, game chal raha 💯",
+            "Sach me working hai, maza aa gaya 😱",
+            "Sahi baat hai, ekdum mast chal raha ✨",
+            "Haan bhai, skins aur bundle dikh rahi 👑",
+            "100% working, rank match bhi smooth ⚡",
+            "Maza aa gaya bhai, headshot easy 🚀",
+            "Try kiya mast hai, sab try karo 🎮",
+            "Ekdum sahi, game chal raha 🥵"
+        ];
+
+        setTimeout(() => {
+            const replyText = positiveReplies[Math.floor(Math.random() * positiveReplies.length)];
+            const replyUser = { name: "user591", initial: "U", color: "#10b981", flag: " 🇮🇳" };
+            pushComment(createCommentElement(replyUser, replyText, false, false));
+        }, 1000);
+
+        setTimeout(() => {
+            const randomUser = users[Math.floor(Math.random() * users.length)];
+            const replyText = positiveReplies[Math.floor(Math.random() * positiveReplies.length)];
+            pushComment(createCommentElement(randomUser, replyText, false, false));
+        }, 2200);
+    }
+
+    window.handleKeyPress = function(e) {
+        if (e.key === 'Enter') {
+            postComment();
+            userInput.blur(); 
+        }
+    }
+
+    // --- 5. BANNER AUTO HIDE/UNHIDE ---
+    const bannerContainer = document.getElementById('bannerContainer');
+    function toggleBanner() {
+        bannerContainer.classList.add('hide-banner');
+        setTimeout(() => {
+            bannerContainer.classList.remove('hide-banner');
+        }, 4000);
+    }
+    setInterval(toggleBanner, 9000);
+    setTimeout(toggleBanner, 3500);
+
+    // --- 6. LOCAL VIDEO PLAYER LOGIC ---
+    const video = document.getElementById('promoVideo');
+    const playBtn = document.getElementById('playBtn');
+
+    playBtn.addEventListener('click', () => {
+        if (video.paused) {
+            video.play();
+            playBtn.style.display = 'none';
+        }
+    });
+
+    video.addEventListener('click', () => {
+        if (!video.paused) {
+            video.pause();
+            playBtn.style.display = 'flex';
+        }
+    });
+    
+    // Show play button again if video ends (though it loops, it's good practice)
+    video.addEventListener('ended', () => {
+        playBtn.style.display = 'flex';
+    });
+
+    // --- 7. INIT ---
+    for(let i=0; i<6; i++) {
+        const randomUser = users[Math.floor(Math.random() * users.length)];
+        let randomText = baseComments[Math.floor(Math.random() * baseComments.length)] + " " + emojis[Math.floor(Math.random() * emojis.length)];
+        commentsContainer.appendChild(createCommentElement(randomUser, randomText));
+    }
+    commentsContainer.scrollTop = commentsContainer.scrollHeight;
+    
+    generateRandomComment();
+
+</script>
+</body>
+</html>
